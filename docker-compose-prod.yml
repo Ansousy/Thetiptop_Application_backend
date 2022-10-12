@@ -1,0 +1,51 @@
+version: '3.8'
+networks:
+  private:
+    external:
+      name: private
+  web:
+    external:
+      name: web
+
+services:
+  mysql:
+    image: mysql:8.0.23
+    container_name: ${DB_HOST}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    labels:
+      - traefik.enable=true
+      - traefik.tcp.routers.mysql.rule=Host(`*`)
+      - traefik.tcp.services.mysql.loadbalancer.server.port=3306
+      - "traefik.tcp.routers.mysql.tls.certresolver=lets-encr"
+    networks:
+      - private
+      - web
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD","while ! nc -z database_prod 3306 ; do echo 'Waiting for the MySQL Server' sleep 60; done"]
+    restart: unless-stopped
+  #------------------
+  #--- API  BACKEND ------
+  #----------------------
+  prod-app:
+    image: elmas19/backend:2.0.1-rc2
+    container_name: prod-backend
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - web
+      - private
+    environment:
+      server.port: 8000
+      NODE_ENV: prod
+    labels:
+      - traefik.enable=true
+      - "traefik.http.routers.prod-app.entrypoints=websecure"
+      - traefik.http.routers.prod-app.rule=Host(`prod-app.dsp-archiweb21-ah-es-ag-hk.fr`)
+      - traefik.http.services.prod-app.loadbalancer.server.port=8000
+      - "traefik.http.routers.prod-app.tls.certresolver=lets-encr"
+    depends_on:
+      - mysql
+    restart: on-failure

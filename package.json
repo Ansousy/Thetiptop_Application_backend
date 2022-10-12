@@ -1,0 +1,54 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Thetiptop Application ",
+  "scripts": {
+    "test-dev": "mocha --reporter spec ",
+    "test": "mocha --reporter mocha-junit-reporter --reporter-options ./test-backend-results.xml ",
+    "dev": "node node_modules/nodemon/bin/nodemon.js --watch app  server.js",
+    "prod": "node server.js"
+  },
+  "keywords": [
+    "Nodejs",
+    "Express",
+    "JWT",
+    "Sequelize",
+    "MySQL",
+    "Authentication"
+  ],
+  "author": "elhadji",
+  "license": "ISC",
+  "dependencies": {
+    "@elastic/elasticsearch": "^7.14.1",
+    "bcryptjs": "^2.4.3",
+    "chai-http": "^4.0.0",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^9.0.2",
+    "elastic-apm-node": "^3.21.1",
+    "elasticsearch": "^16.7.2",
+    "express": "^4.16.3",
+    "express-validator": "^6.14.0",
+    "jsonwebtoken": "^8.3.0",
+    "mysql2": "^1.6.1",
+    "rate-limiter-flexible": "^2.2.4",
+    "redis": "^3.1.2",
+    "sequelize": "^4.39.0",
+    "sib-api-v3-sdk": "^8.2.0",
+    "spm-agent-nodejs": "^4.1.4"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "cross-env": "^7.0.3",
+    "helmet": "^4.6.0",
+    "hpp": "^0.2.3",
+    "mocha": "^5.1.1",
+    "mocha-junit-reporter": "^2.0.2",
+    "my-logger": "^1.0.1",
+    "nodemon": "^2.0.7",
+    "request": "^2.88.2",
+    "snyk": "^1.786.0",
+    "toobusy-js": "^0.5.1",
+    "xss-clean": "^0.1.1"
+  }
+}

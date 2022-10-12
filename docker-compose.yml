@@ -1,0 +1,28 @@
+version: '3.8'
+networks:
+  private:
+    external:
+      name: private
+  web:
+    external:
+      name: web
+
+services:
+  #----------------------#
+  #----- REDIS BD -------#
+  #----------------------#
+  redis:
+    image: redis
+    container_name: redis
+    volumes:
+      - ./redis/redis.conf:/etc/redis/redis.conf
+    labels:
+      - traefik.enable=true
+      - traefik.tcp.routers.redis.rule=HostSNI(`*`)
+      - traefik.tcp.services.redis.loadbalancer.server.port=6379
+      - "traefik.tcp.routers.redis.tls.certresolver=lets-encr"
+    networks:
+      - web
+      - private
+    command: [ "redis-server", "/etc/redis/redis.conf" ]
+    restart: on-failure
